@@ -11,3 +11,18 @@ export async function buscarRepositorios(id){
         return []
     }
 };
+
+export async function atualizarRepositorios(postId, nome, data, id){
+    try{
+        await api.put(`/repos/${id}`,{
+            name: nome,
+            data: data,
+            postId: postId,
+            id: id
+        });
+        return 'Sucesso'
+    }
+    catch(error){
+         return 'Erro'
+    }
+};
