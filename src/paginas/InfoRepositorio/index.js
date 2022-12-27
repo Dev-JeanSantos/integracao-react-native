@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Text, View, TouchableOpacity, TextInput, Alert } from 'react-native';
-import { atualizarRepositorios } from '../../servicos/requisicoes/repositorios';
+import { atualizarRepositorios, deletarRepositorio } from '../../servicos/requisicoes/repositorios';
 import estilos from './estilos';
 
 export default function InfoRepositorio({ route, navigation }) {
@@ -10,18 +10,32 @@ export default function InfoRepositorio({ route, navigation }) {
     async function salvar() {
         const resultado = await atualizarRepositorios(
             route.params.item.postId,
-            route.params.item.id,
             nome,
-            data
+            data,
+            route.params.item.id
         )
 
-        if (resultado) {
+        if (resultado === 'Sucesso') {
             Alert.alert("Repositório atualizado com sucesso")
             navigation.goBack()
         }
         else {
 
             Alert.alert("Falha ao atualizar repositório")
+            navigation.goBack()
+        }
+    }
+
+    async function deletar() {
+        const resultado = await deletarRepositorio(route.params.item.id)
+
+        if (resultado === 'Sucesso') {
+            Alert.alert("Repositório deletado com sucesso")
+            navigation.goBack()
+        }
+        else {
+
+            Alert.alert("Falha ao deletar repositório")
             navigation.goBack()
         }
     }
@@ -33,14 +47,14 @@ export default function InfoRepositorio({ route, navigation }) {
                 autoCapitalize="none"
                 style={estilos.entrada}
                 value={nome}
-                onChange={setNome}
+                onChangeText={setNome}
             />
             <TextInput
                 placeholder="Data de criação"
                 autoCapitalize="none"
                 style={estilos.entrada}
                 value={data}
-                onChange={setData}
+                onChangeText={setData}
             />
             <TouchableOpacity
                 style={estilos.botao}
@@ -53,7 +67,7 @@ export default function InfoRepositorio({ route, navigation }) {
             <TouchableOpacity
                 style={[estilos.botao, { backgroundColor: '#DD2B2B', marginTop: 10 }]}
             >
-                <Text style={estilos.textoBotao}>
+                <Text style={estilos.textoBotao} onPress={deletar}>
                     Deletar
                 </Text>
             </TouchableOpacity>
